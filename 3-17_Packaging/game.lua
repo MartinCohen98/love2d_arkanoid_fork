@@ -16,11 +16,11 @@ end
 function game.enter( prev_state, ... )
    local args = ...
    if prev_state == "gamepaused" then
-      music:resume()
+      music:play()
    end
    if prev_state == "gameover" or prev_state == "gamefinished" then
       side_panel.reset()
-      music:rewind()
+      music:stop()
    end
    if args and args.current_level then
       bricks.clear_current_level_bricks()
@@ -31,7 +31,7 @@ function game.enter( prev_state, ... )
       balls.reset()
       platform.remove_bonuses_effects()
       walls.remove_bonuses_effects()
-   end      
+   end
 end
 
 function game.update( dt )

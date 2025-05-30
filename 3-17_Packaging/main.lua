@@ -1,6 +1,6 @@
 gamestates = require "gamestates"
 
-music = love.audio.newSource( "sounds/music/S31-Night Prowler.ogg" )
+music = love.audio.newSource( "sounds/music/S31-Night Prowler.ogg", "stream" )
 music:setLooping( true )
 
 function love.load()

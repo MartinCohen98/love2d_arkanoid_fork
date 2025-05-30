@@ -15,7 +15,7 @@ end
 function gamepaused.draw()
    for _, obj in pairs( game_objects ) do
       if type(obj) == "table" and obj.draw then
-	 obj.draw()
+	      obj.draw()
       end
    end
    gamepaused.cast_shadow()
@@ -29,7 +29,7 @@ end
 
 function gamepaused.cast_shadow()
    local r, g, b, a = love.graphics.getColor( )
-   love.graphics.setColor( 10, 10, 10, 100 )
+   love.graphics.setColor( 0.01, 0.01, 0.01, 0.7 )
    love.graphics.rectangle("fill",
 			   0,
 			   0,
@@ -43,7 +43,7 @@ function gamepaused.keyreleased( key, code )
       gamestates.set_state( "game" )
    elseif key == 'escape' then
       love.event.quit()
-   end    
+   end
 end
 
 function gamepaused.mousereleased( x, y, button, istouch )
@@ -51,11 +51,11 @@ function gamepaused.mousereleased( x, y, button, istouch )
       gamestates.set_state( "game" )
    elseif button == 'r' or button == 2 then
       love.event.quit()
-   end   
+   end
 end
 
 function gamepaused.exit()
-   game_objects = nil 
+   game_objects = nil
 end
 
 return gamepaused
