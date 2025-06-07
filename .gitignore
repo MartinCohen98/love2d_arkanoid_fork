@@ -1,4 +1,5 @@
 \#*\#
 *.love
+*/dist/arkanoid.exe
 *.*~
 .vscode/
