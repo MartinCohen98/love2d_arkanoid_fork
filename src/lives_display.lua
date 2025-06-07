@@ -1,7 +1,7 @@
 local vector = require "vector"
 
 local lives_display = {}
-lives_display.lives = 5
+lives_display.lives = 1
 lives_display.lives_added_from_score = 0
 
 local position = vector( 620, 500 )
@@ -46,7 +46,7 @@ function lives_display.add_life_if_score_reached( score )
 end
    
 function lives_display.reset()
-   lives_display.lives = 5
+   lives_display.lives = 1
    lives_display.lives_added_from_score = 0
 end
 

@@ -21,7 +21,7 @@ function game.enter( prev_state, ... )
    end
    if prev_state == "gameover" or prev_state == "gamefinished" then
       side_panel.reset()
-      music:stop()
+      music:play()
    end
    if args and args.current_level then
       bricks.clear_current_level_bricks()
@@ -71,8 +71,8 @@ function game.keyreleased( key, code )
    elseif  key == 'escape' then
       music:pause()
       gamestates.set_state(
-	 "gamepaused",
-	 { balls, platform, bricks, bonuses, walls, side_panel } )
+         "gamepaused",
+         { balls, platform, bricks, bonuses, walls, side_panel } )
    end
 end
 
@@ -82,22 +82,22 @@ function game.mousereleased( x, y, button, istouch )
    elseif button == 'r' or button == 2 then
       music:pause()
       gamestates.set_state(
-	 "gamepaused",
-	 { balls, platform, bricks, bonuses, walls, side_panel } )
+         "gamepaused",
+         { balls, platform, bricks, bonuses, walls, side_panel } )
    end
 end
 
 function game.check_no_more_balls( balls, lives_display )
    if balls.no_more_balls then
       lives_display.lose_life()      
-      if lives_display.lives < 0 then
-	 gamestates.set_state( "gameover",
-			       { balls, platform, bricks,
-				 bonuses, walls, side_panel } )
+      if lives_display.lives <= 0 then
+         gamestates.set_state( "gameover",
+                     { balls, platform, bricks,
+                  bonuses, walls, side_panel } )
       else
-	 balls.reset()
-	 platform.remove_bonuses_effects()
-	 walls.remove_bonuses_effects()
+         balls.reset()
+         platform.remove_bonuses_effects()
+         walls.remove_bonuses_effects()
       end
    end
 end
