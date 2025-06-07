@@ -14,7 +14,7 @@ bricks.brick_height = bricks.tile_height
 bricks.horizontal_distance = 0
 bricks.vertical_distance = 0
 bricks.current_level_bricks = {}
-bricks.no_more_bricks = false
+bricks.no_more_bricks = false --test
 
 local simple_break_sound = {
    love.audio.newSource(
