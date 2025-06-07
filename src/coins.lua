@@ -10,7 +10,7 @@ coins.radius = 14
 coins.speed = vector( 0, 100 )
 coins.current_level_coins = {}
 
-local coin_collected_sound = love.audio.newSource("sounds/bonus/bonus1.wav", "static")
+local coin_collected_sound = love.audio.newSource("sounds/coin/coin.wav", "static")
 
 function coins.new_coin( position )
    return( { position = position,
@@ -61,10 +61,14 @@ function coins.draw()
    end
 end
 
-function coins.coin_collected( i, coin,
-				  balls, platform,
-				  walls, lives_display )
-   lives_display.add_life()
+function coins.clear_current_level_coins()
+   for i in pairs( coins.current_level_coins ) do
+      coins.current_level_coins[i] = nil
+   end
+end
+
+function coins.coin_collected( i, score_display )
+   score_display.add_score_for_coin()
    table.remove( coins.current_level_coins, i )
    coin_collected_sound:play()
 end
@@ -73,10 +77,10 @@ function coins.add_coin( coin )
    table.insert( coins.current_level_coins, coin )
 end
 
-function coins.generate_coin( position, cointype )
-   local spawn_rng = math.random(1, 12)
-   if spawn_rng == 12 then
-      coins.add_coin( coins.new_coin( position, cointype ) )
+function coins.generate_coin(position)
+   local spawn_rng = math.random(1, 3)
+   if spawn_rng == 3 then
+      coins.add_coin(coins.new_coin(position))
    end
 end
 

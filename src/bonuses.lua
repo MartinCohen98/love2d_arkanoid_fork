@@ -154,13 +154,14 @@ function bonuses.bonustype_denotes_random( bonustype )
    return bonustype == 0
 end
 
-function bonuses.generate_bonus( position, bonustype )
+function bonuses.generate_bonus( position, bonustype, coins )
    if bonuses.bonustype_denotes_random( bonustype ) then
       bonustype = bonuses.random_bonustype()
    end
    if bonuses.valid_bonustype( bonustype ) then
       bonuses.add_bonus( bonuses.new_bonus( position, bonustype ) )
    else
+      coins.generate_coin(position)
    end
 end
 

@@ -36,7 +36,7 @@ function buttons.draw_button( single_button )
 				  single_button.width,
 				  single_button.height )
 	 local r, g, b, a = love.graphics.getColor()
-	 love.graphics.setColor( 255, 0, 0, 100 )
+	 love.graphics.setColor( 1, 0, 0, 0.3 )
 	 love.graphics.print( single_button.text,
 			      single_button.position.x,
 			      single_button.position.y )

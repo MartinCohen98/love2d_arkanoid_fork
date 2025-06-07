@@ -17,7 +17,7 @@ function score_display.draw()
    local oldfont = love.graphics.getFont()
    love.graphics.setFont( bungee_font )
    local r, g, b, a = love.graphics.getColor( )
-   love.graphics.setColor( 255, 255, 255, 230 )
+   love.graphics.setColor( 1, 1, 1, 0.9 )
    love.graphics.printf( "Score:",
 			 position.x,
 			 position.y,
@@ -38,6 +38,10 @@ end
 
 function score_display.add_score_for_cracked_brick()
    score_display.score = score_display.score + 30
+end
+
+function score_display.add_score_for_coin()
+   score_display.score = score_display.score + 100
 end
 
 function score_display.reset()

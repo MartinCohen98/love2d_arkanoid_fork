@@ -3,16 +3,18 @@ local vector = require "vector"
 local collisions = {}
 
 function collisions.resolve_collisions( balls, platform,
-					walls, bricks,
-					bonuses, side_panel )
+					walls, bricks, bonuses,
+					coins, side_panel )
    collisions.balls_platform_collision( balls, platform )
    collisions.balls_walls_collision( balls, walls )
    collisions.balls_bricks_collision( balls, bricks, bonuses,
-				      side_panel.score_display )
+				      coins, side_panel.score_display )
    collisions.platform_walls_collision( platform, walls )
    collisions.platform_bonuses_collision( platform, bonuses,
 					  balls, walls,
 					  side_panel.lives_display )
+   collisions.platform_coins_collision( platform, coins,
+					  side_panel.score_display )
 end
 
 function collisions.check_rectangles_overlap( a, b )
@@ -77,7 +79,7 @@ function collisions.balls_walls_collision( balls, walls )
 end
 
 function collisions.balls_bricks_collision( balls, bricks, bonuses,
-					    score_display )
+					    coins, score_display )
    local overlap, shift_ball
    for _, ball in pairs( balls.current_balls ) do
       local b = { x = ball.position.x - ball.radius,
@@ -94,7 +96,7 @@ function collisions.balls_bricks_collision( balls, bricks, bonuses,
 	 if overlap then	 
 	    balls.brick_rebound( ball, shift_ball )
 	    bricks.brick_hit_by_ball( i, brick, shift_ball, bonuses,
-				      score_display )
+				      coins, score_display )
 	 end
       end
    end
@@ -137,6 +139,25 @@ function collisions.platform_bonuses_collision( platform, bonuses,
 	 bonuses.bonus_collected( i, bonus,
 				  balls, platform,
 				  walls, lives_display )
+      end
+   end
+end
+
+function collisions.platform_coins_collision( platform, coins,
+						score_display )
+   local overlap
+   local b = { x = platform.position.x,
+	      y = platform.position.y,
+	      width = platform.width,
+	      height = platform.height }
+   for i, coin in pairs( coins.current_level_coins ) do
+      local a = { x = coin.position.x - coins.radius,
+		   y = coin.position.y - coins.radius,
+		   width = 2 * coins.radius,
+		   height = 2 * coins.radius }
+      overlap = collisions.check_rectangles_overlap( a, b )
+      if overlap then
+	   coins.coin_collected(i, score_display)
       end
    end
 end

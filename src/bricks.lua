@@ -143,7 +143,7 @@ function bricks.draw()
    end
 end
 
-function bricks.brick_hit_by_ball( i, brick, shift_ball, bonuses, score_display )
+function bricks.brick_hit_by_ball( i, brick, shift_ball, bonuses, coins, score_display )
    if bricks.is_simple( brick ) then
       bricks.decrease_color(brick)
       score_display.add_score_for_simple_brick()
@@ -151,7 +151,7 @@ function bricks.brick_hit_by_ball( i, brick, shift_ball, bonuses, score_display 
          bonuses.generate_bonus(
             vector( brick.position.x + brick.width / 2,
                brick.position.y + brick.height / 2 ),
-            brick.bonustype )
+            brick.bonustype, coins )
          table.remove( bricks.current_level_bricks, i )
       end
       local snd = simple_break_sound[ snd_rng:random( #simple_break_sound ) ]

@@ -6,6 +6,7 @@ local walls = require "walls"
 local side_panel = require "side_panel"
 local collisions = require "collisions"
 local levels = require "levels"
+local coins = require "coins"
 
 local game = {}
 
@@ -25,6 +26,7 @@ function game.enter( prev_state, ... )
    if args and args.current_level then
       bricks.clear_current_level_bricks()
       bonuses.clear_current_level_bonuses()
+      coins.clear_current_level_coins()
       levels.current_level = args.current_level
       local level = levels.require_current_level()
       bricks.construct_level( level )
@@ -39,11 +41,12 @@ function game.update( dt )
    platform.update( dt )
    bricks.update( dt )
    bonuses.update( dt )
+   coins.update(dt)
    walls.update( dt )
    side_panel.update( dt )
    collisions.resolve_collisions( balls, platform,
 				  walls, bricks,
-				  bonuses, side_panel )
+				  bonuses, coins, side_panel )
    side_panel.lives_display.add_life_if_score_reached(
       side_panel.score_display.score )
    game.check_no_more_balls( balls, side_panel.lives_display )
@@ -55,6 +58,7 @@ function game.draw()
    platform.draw()
    bricks.draw()
    bonuses.draw()
+   coins.draw()
    walls.draw()
    side_panel.draw()
 end

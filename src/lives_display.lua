@@ -18,7 +18,7 @@ function lives_display.draw()
    local oldfont = love.graphics.getFont()
    love.graphics.setFont( bungee_font )
    local r, g, b, a = love.graphics.getColor( )
-   love.graphics.setColor( 255, 255, 255, 230 )
+   love.graphics.setColor( 1, 1, 1, 0.9 )
    love.graphics.printf( "Lives: " .. tostring( lives_display.lives ),
 			 position.x,
 			 position.y,
