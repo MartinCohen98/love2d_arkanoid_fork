@@ -12,6 +12,8 @@ coins.current_level_coins = {}
 
 local coin_collected_sound = love.audio.newSource("sounds/coin/coin.wav", "static")
 
+local coins_rng = love.math.newRandomGenerator( os.time() )
+
 function coins.new_coin( position )
    return( { position = position,
 	     quad = coins.cointype_to_quad() } )
@@ -67,9 +69,11 @@ function coins.clear_current_level_coins()
    end
 end
 
-function coins.coin_collected( i, score_display )
+function coins.coin_collected( i, score_display, coins_display )
    score_display.add_score_for_coin()
+   coins_display.add_coin()
    table.remove( coins.current_level_coins, i )
+   coin_collected_sound:stop()
    coin_collected_sound:play()
 end
 
@@ -78,7 +82,7 @@ function coins.add_coin( coin )
 end
 
 function coins.generate_coin(position)
-   local spawn_rng = math.random(1, 3)
+   local spawn_rng = coins_rng:random(1, 3)
    if spawn_rng == 3 then
       coins.add_coin(coins.new_coin(position))
    end

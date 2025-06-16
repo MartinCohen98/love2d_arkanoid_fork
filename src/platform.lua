@@ -4,15 +4,19 @@ local platform = {}
 platform.position = vector( 300, 500 )
 platform.speed = vector( 800, 0 )
 platform.image = love.graphics.newImage( "img/800x600/platform.png" )
-platform.small_tile_width = 75
+platform.base_small_width = 75
+platform.base_norm_width = 108
+platform.base_large_width = 141
+platform.length_multiplier = 1.0
+platform.small_tile_width = platform.base_small_width
 platform.small_tile_height = 16
 platform.small_tile_x_pos = 0
 platform.small_tile_y_pos = 0
-platform.norm_tile_width = 108
+platform.norm_tile_width = platform.base_norm_width
 platform.norm_tile_height = 16
 platform.norm_tile_x_pos = 0
 platform.norm_tile_y_pos = 32
-platform.large_tile_width = 141
+platform.large_tile_width = platform.base_large_width
 platform.large_tile_height = 16
 platform.large_tile_x_pos = 0
 platform.large_tile_y_pos = 64
@@ -30,16 +34,31 @@ platform.height = platform.norm_tile_height
 platform.size = "norm"
 platform.glued = false
 platform.activated_next_level_bonus = false
+platform.permanent_length_increases = 0
 
 function platform.update( dt )
    platform.follow_mouse( dt )
 end
 
 function platform.draw()
-   love.graphics.draw( platform.image,
-   		       platform.quad, 
-   		       platform.position.x,
-   		       platform.position.y )
+   local original_tile_width
+   if platform.size == "small" then
+      original_tile_width = 75
+   elseif platform.size == "norm" then
+      original_tile_width = 108
+   elseif platform.size == "large" then
+      original_tile_width = 141
+   end
+   local scale_x = platform.width / original_tile_width
+   love.graphics.draw(
+      platform.image,
+      platform.quad,
+      platform.position.x,
+      platform.position.y,
+      0,         -- rotation
+      scale_x,   -- scale x (width)
+      1          -- scale y (height)
+   )
 end
 
 function platform.follow_mouse( dt )
@@ -65,44 +84,27 @@ function platform.bounce_from_wall( shift_platform, wall )
    end
 end
 
-function platform.react_on_decrease_bonus()
-   if platform.size == "norm" then
-      platform.width = platform.small_tile_width
-      platform.height = platform.small_tile_height
-      platform.quad = love.graphics.newQuad(
-	 platform.small_tile_x_pos, platform.small_tile_y_pos,
-	 platform.small_tile_width, platform.small_tile_height,
-	 platform.tileset_width, platform.tileset_height )
-      platform.size = "small"
-   elseif platform.size == "large" then
-      platform.width = platform.norm_tile_width
-      platform.height = platform.norm_tile_height
-      platform.quad = love.graphics.newQuad(
-	 platform.norm_tile_x_pos, platform.norm_tile_y_pos,
-	 platform.norm_tile_width, platform.norm_tile_height,
-	 platform.tileset_width, platform.tileset_height )
-      platform.size = "norm"	 
-   end
+function platform.apply_length_multiplier()
+   platform.small_tile_width = platform.base_small_width * platform.length_multiplier
+   platform.norm_tile_width = platform.base_norm_width * platform.length_multiplier
+   platform.large_tile_width = platform.base_large_width * platform.length_multiplier
 end
 
-function platform.react_on_increase_bonus()
-   if platform.size == "small" then
-      platform.width = platform.norm_tile_width
-      platform.height = platform.norm_tile_height
-      platform.quad = love.graphics.newQuad(
-	 platform.norm_tile_x_pos, platform.norm_tile_y_pos,
-	 platform.norm_tile_width, platform.norm_tile_height,
-	 platform.tileset_width, platform.tileset_height )
-      platform.size = "norm"
-   elseif platform.size == "norm" then
-      platform.width = platform.large_tile_width
-      platform.height = platform.large_tile_height
-      platform.quad = love.graphics.newQuad(
-	 platform.large_tile_x_pos, platform.large_tile_y_pos,
-	 platform.large_tile_width, platform.large_tile_height,
-	 platform.tileset_width, platform.tileset_height )
-      platform.size = "large"
-   end
+function platform.increase_permanent_length()
+   platform.base_small_width = platform.base_small_width + 10
+   platform.base_norm_width = platform.base_norm_width + 10
+   platform.base_large_width = platform.base_large_width + 10
+
+   platform.small_tile_width = platform.base_small_width
+   platform.norm_tile_width = platform.base_norm_width
+   platform.large_tile_width = platform.base_large_width
+
+   platform.width = platform.norm_tile_width
+   platform.height = platform.norm_tile_height
+   platform.quad = love.graphics.newQuad(
+      platform.norm_tile_x_pos, platform.norm_tile_y_pos,
+      platform.norm_tile_width, platform.norm_tile_height,
+      platform.tileset_width, platform.tileset_height )
 end
 
 function platform.reset_size_to_norm()
@@ -112,9 +114,48 @@ function platform.reset_size_to_norm()
       platform.norm_tile_x_pos, platform.norm_tile_y_pos,
       platform.norm_tile_width, platform.norm_tile_height,
       platform.tileset_width, platform.tileset_height )
-   platform.size = "norm"   
+   platform.size = "norm"
 end
 
+function platform.react_on_decrease_bonus()
+   if platform.size == "norm" then
+      platform.width = platform.small_tile_width
+      platform.height = platform.small_tile_height
+      platform.quad = love.graphics.newQuad(
+         platform.small_tile_x_pos, platform.small_tile_y_pos,
+         platform.small_tile_width, platform.small_tile_height,
+         platform.tileset_width, platform.tileset_height )
+      platform.size = "small"
+   elseif platform.size == "large" then
+      platform.width = platform.norm_tile_width
+      platform.height = platform.norm_tile_height
+      platform.quad = love.graphics.newQuad(
+         platform.norm_tile_x_pos, platform.norm_tile_y_pos,
+         platform.norm_tile_width, platform.norm_tile_height,
+         platform.tileset_width, platform.tileset_height )
+      platform.size = "norm"
+   end
+end
+
+function platform.react_on_increase_bonus()
+   if platform.size == "small" then
+      platform.width = platform.norm_tile_width
+      platform.height = platform.norm_tile_height
+      platform.quad = love.graphics.newQuad(
+         platform.norm_tile_x_pos, platform.norm_tile_y_pos,
+         platform.norm_tile_width, platform.norm_tile_height,
+         platform.tileset_width, platform.tileset_height )
+      platform.size = "norm"
+   elseif platform.size == "norm" then
+      platform.width = platform.large_tile_width
+      platform.height = platform.large_tile_height
+      platform.quad = love.graphics.newQuad(
+         platform.large_tile_x_pos, platform.large_tile_y_pos,
+         platform.large_tile_width, platform.large_tile_height,
+         platform.tileset_width, platform.tileset_height )
+      platform.size = "large"
+   end
+end
 
 function platform.react_on_glue_bonus()
    platform.glued = true

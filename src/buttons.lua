@@ -70,7 +70,7 @@ function buttons.inside( single_button, pos )
 end
 
 function buttons.mousereleased( single_button, x, y, button )
-   return single_button.selected 
+   return buttons.inside(single_button, vector(x, y))
 end
 
 return buttons

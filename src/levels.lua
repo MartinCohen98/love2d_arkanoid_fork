@@ -4,6 +4,8 @@ levels.current_level = 1
 levels.gamefinished = false
 levels.sequence = require "levels/sequence" 
 
+local bricks_rng = love.math.newRandomGenerator( os.time() )
+
 function levels.require_current_level()
    local level_filename = "levels/" ..
       levels.sequence[ levels.current_level ]
@@ -17,7 +19,7 @@ function levels.generateRandomMatrix(rows, cols, max)
     for i = 1, rows do
         matrix[i] = {}
         for j = 1, cols do
-            matrix[i][j] = math.random(11, 20)
+            matrix[i][j] = bricks_rng:random(11, 20)
             if matrix[i][j] > max or matrix[i][j] > 16 then
                matrix[i][j] = 0
             end

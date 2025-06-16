@@ -18,7 +18,7 @@ local platform_height = 16
 local platform_starting_pos = vector( 300, 500 )
 local ball_platform_initial_separation = vector(
    ball_x_shift, -1 * platform_height / 2 - balls.radius - 1 )
-local initial_launch_speed_magnitude = 300
+balls.base_initial_launch_speed = 300
 
 local ball_wall_sound = love.audio.newSource(
    "sounds/ball_wall/pumpkin_break_01_short_norm.ogg",
@@ -222,20 +222,20 @@ function balls.increase_speed_after_collision( single_ball )
    end
 end
 
+function balls.decrease_permanent_speed()
+   balls.base_initial_launch_speed = balls.base_initial_launch_speed - 100
+end
+
 function balls.reset()
+   balls.current_balls = {}
    balls.no_more_balls = false
-   for i in pairs( balls.current_balls ) do
-      balls.current_balls[i] = nil
-   end
-   local position = platform_starting_pos +
-      ball_platform_initial_separation
-   local speed = vector( 0, 0 )
-   local platform_launch_speed_magnitude = initial_launch_speed_magnitude
-   local stuck_to_platform = true
-   balls.add_ball( balls.new_ball(
-		      position, speed,
-		      platform_launch_speed_magnitude,
-		      stuck_to_platform ) )
+   local initial_speed = vector(0, -balls.base_initial_launch_speed)
+   local ball = balls.new_ball(
+      platform_starting_pos + ball_platform_initial_separation,
+      initial_speed,
+      balls.base_initial_launch_speed,
+      true)
+   balls.add_ball(ball)
 end
 
 function balls.check_balls_escaped_from_screen()

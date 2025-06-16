@@ -34,6 +34,9 @@ function game.enter( prev_state, ... )
       platform.remove_bonuses_effects()
       walls.remove_bonuses_effects()
    end
+   if args and args.coins then
+      side_panel.coins_display.coins = args.coins
+   end
 end
 
 function game.update( dt )
@@ -107,10 +110,16 @@ function game.switch_to_next_level( bricks, levels )
       bricks.clear_current_level_bricks()
       bonuses.clear_current_level_bonuses()
       if levels.current_level < #levels.sequence then
-	 gamestates.set_state(
-	    "game", { current_level = levels.current_level + 1 } )
+         -- Show shop before next level
+         gamestates.set_state("shop", {
+            current_level = levels.current_level,
+            coins_display = side_panel.coins_display,
+            platform = platform,
+            balls = balls,
+            lives_display = side_panel.lives_display
+         })
       else
-	 gamestates.set_state( "gamefinished" )
+         gamestates.set_state("gamefinished")
       end
    end
 end
